@@ -1,0 +1,4 @@
+OriRGBA32 是这张图在unity中设置压缩格式是RGBA32
+UnityDXT1 是这张图在unity中设置压缩格式是DXT1
+CrunchDXT1_DDS 是这张图，在crunch.exe中，输出的图，应该和Unity压缩一样
+ //Texture_Compress 是使用Texture2D类的Compress api产生的图 (需要图的m_TexData)
