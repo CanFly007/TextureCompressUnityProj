@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+ï»¿using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +21,9 @@ public class TextureCompress : MonoBehaviour
 
         string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         toolPath = Path.Combine(appData, "MyTools/astcenc-sse2.exe");
+        Debug.Log("toolPath: " + toolPath);
+        //win: C:\Users\56399\AppData\Roaming\MyTools/astcenc-sse2.exe
+        //mac: 
         if (!File.Exists(toolPath))
             throw new FileNotFoundException($"Cannot find astc encoder at {Path.GetFullPath(toolPath)}.");
 
@@ -70,7 +73,7 @@ public class TextureCompress : MonoBehaviour
             if (process.ExitCode == 0)
             {
                 Debug.Log("Texture compressed successfully.");
-                // Äã¿ÉÒÔÔÚÕâÀïÌí¼Ó´úÂëÀ´´¦ÀíÊä³öÎÄ¼ş
+                // ä½ å¯ä»¥åœ¨è¿™é‡Œæ·»åŠ ä»£ç æ¥å¤„ç†è¾“å‡ºæ–‡ä»¶
             }
             else
             {
