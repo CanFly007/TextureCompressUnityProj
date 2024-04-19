@@ -14,21 +14,16 @@ public class TextureCompress : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log(Application.streamingAssetsPath);
-        //Debug.Log(Application.persistentDataPath);
-        //Debug.Log(Application.dataPath);
-        //Debug.Log(Application.temporaryCachePath);
-
-        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string appData = Path.Combine(Application.dataPath, "Tools");
         switch (Application.platform)
         {
             case RuntimePlatform.WindowsPlayer:
             case RuntimePlatform.WindowsEditor:
-                toolPath = Path.Combine(appData, "MyTools/astcenc-sse2.exe");
+                toolPath = Path.Combine(appData, "astcenc-sse2.exe");
                 break;
             case RuntimePlatform.OSXPlayer:
             case RuntimePlatform.OSXEditor:
-                toolPath = Path.Combine(appData, "MyTools/astcenc-sse2-arm64");
+                toolPath = Path.Combine(appData, "astcenc-sse2-arm64");
                 break;
         }
 
@@ -40,23 +35,30 @@ public class TextureCompress : MonoBehaviour
 
         pngPath = Path.Combine(Application.streamingAssetsPath, "RGBA32.png");
         //pngPath = "E:\\202404\\TextureCompressUnityProj\\Assets\\Textures\\ASTC\\98_OriRGBA32.png";
+
+
+        ////test
+        //string toolFolder = Path.Combine(Application.dataPath, "Tools");
+        //string testToolPath = Path.Combine(toolFolder, "astcenc-sse2.exe");
+        //Debug.Log(testToolPath);  //E:/202404/TextureCompressUnityProj/build/TextureCompressUnityProj_Data\Tools\astcenc-sse2.exe
+        //if (!File.Exists(testToolPath))
+        //    Debug.LogError("not exists exe");
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            CompressTextureAsync(pngPath).Forget();
+            AstcCompressAsync(pngPath).Forget();
         }
     }
 
-    async UniTaskVoid CompressTextureAsync(string pngPath)
+    async UniTaskVoid AstcCompressAsync(string pngPath)
     {
-        await CompressTexture(pngPath);
+        await AstcCompress(pngPath);
     }
 
-    async UniTask CompressTexture(string path)
+    async UniTask AstcCompress(string path)
     {
         if (!File.Exists(path))
         {
@@ -84,7 +86,6 @@ public class TextureCompress : MonoBehaviour
             if (process.ExitCode == 0)
             {
                 Debug.Log("Texture compressed successfully.");
-                // 你可以在这里添加代码来处理输出文件
             }
             else
             {
