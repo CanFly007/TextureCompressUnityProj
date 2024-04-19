@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -37,5 +37,25 @@ public class BuildPostProcessor : IPostprocessBuildWithReport
             File.Copy(sourcePath, targetPath, true);
         else
             Debug.LogError("Tool not found: " + sourcePath);
+
+
+
+        // 复制图片
+        string imageName = "RGBA32.png";
+        string sourcePathImage = Path.Combine(Application.dataPath, "Images", imageName);
+        string destinationImagesDir = Path.Combine(outputDir, Application.productName + "_Data", "Images");
+        string targetPathImage = Path.Combine(destinationImagesDir, imageName);
+        if (!Directory.Exists(Path.GetDirectoryName(targetPathImage)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(targetPathImage));
+        }
+        if (File.Exists(sourcePathImage))
+        {
+            File.Copy(sourcePathImage, targetPathImage, true);
+        }
+        else
+        {
+            Debug.LogError("Image not found: " + sourcePathImage);
+        }
     }
 }

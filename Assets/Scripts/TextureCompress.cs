@@ -26,23 +26,15 @@ public class TextureCompress : MonoBehaviour
                 toolPath = Path.Combine(appData, "astcenc-sse2-arm64");
                 break;
         }
-
-        Debug.Log("toolPath: " + toolPath);
-        //win: C:\Users\56399\AppData\Roaming\MyTools/astcenc-sse2.exe
-        //mac: /Users/hexueqiang/.config/MyTools/astcenc-sse2.exe
         if (!File.Exists(toolPath))
             throw new FileNotFoundException($"Cannot find astc encoder at {Path.GetFullPath(toolPath)}.");
 
-        pngPath = Path.Combine(Application.streamingAssetsPath, "RGBA32.png");
-        //pngPath = "E:\\202404\\TextureCompressUnityProj\\Assets\\Textures\\ASTC\\98_OriRGBA32.png";
-
-
-        ////test
-        //string toolFolder = Path.Combine(Application.dataPath, "Tools");
-        //string testToolPath = Path.Combine(toolFolder, "astcenc-sse2.exe");
-        //Debug.Log(testToolPath);  //E:/202404/TextureCompressUnityProj/build/TextureCompressUnityProj_Data\Tools\astcenc-sse2.exe
-        //if (!File.Exists(testToolPath))
-        //    Debug.LogError("not exists exe");
+        //图片
+        pngPath = Path.Combine(Application.dataPath, "Images", "RGBA32.png");
+        if (!File.Exists(pngPath))
+        {
+            throw new FileNotFoundException($"Cannot find image at {Path.GetFullPath(pngPath)}.");
+        }
     }
 
     void Update()
