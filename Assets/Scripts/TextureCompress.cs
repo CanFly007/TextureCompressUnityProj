@@ -54,12 +54,12 @@ public class TextureCompress : MonoBehaviour
         }
 
         int extIndex = path.LastIndexOf('.');
-        string outputPath = path.Substring(0, extIndex) + "_astc" + path.Substring(extIndex);
+        string outputPath = (extIndex != -1) ? path.Substring(0, extIndex) + ".astc" : path + ".astc";
 
         ProcessStartInfo startInfo = new ProcessStartInfo
         {
             FileName = toolPath,
-            Arguments = $"-cl \"{path}\" \"{outputPath}\" 6x6 -medium",
+            Arguments = $" -cl \"{path}\" \"{outputPath}\" 6x6 -medium -yflip",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             CreateNoWindow = true
