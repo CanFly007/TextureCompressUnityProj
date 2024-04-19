@@ -20,7 +20,18 @@ public class TextureCompress : MonoBehaviour
         //Debug.Log(Application.temporaryCachePath);
 
         string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        toolPath = Path.Combine(appData, "MyTools/astcenc-sse2.exe");
+        switch (Application.platform)
+        {
+            case RuntimePlatform.WindowsPlayer:
+            case RuntimePlatform.WindowsEditor:
+                toolPath = Path.Combine(appData, "MyTools/astcenc-sse2.exe");
+                break;
+            case RuntimePlatform.OSXPlayer:
+            case RuntimePlatform.OSXEditor:
+                toolPath = Path.Combine(appData, "MyTools/astcenc-sse2-arm64");
+                break;
+        }
+
         Debug.Log("toolPath: " + toolPath);
         //win: C:\Users\56399\AppData\Roaming\MyTools/astcenc-sse2.exe
         //mac: /Users/hexueqiang/.config/MyTools/astcenc-sse2.exe
