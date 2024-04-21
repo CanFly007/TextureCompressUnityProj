@@ -10,6 +10,7 @@ public class BuildPostProcessor : IPostprocessBuildWithReport
 
     public void OnPostprocessBuild(BuildReport report)
     {
+        //copy Tools/astcenc-sse2.exe to _Data/Tools/astcenc-sse2.exe
         BuildTarget activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
 
         string outputDir = Path.GetDirectoryName(report.summary.outputPath);
@@ -29,6 +30,37 @@ public class BuildPostProcessor : IPostprocessBuildWithReport
             string destinationEncoderDir = Path.Combine(report.summary.outputPath, "Contents", "Tools");
             targetPath = Path.Combine(destinationEncoderDir, exeName);
         }
+
+        if (!Directory.Exists(Path.GetDirectoryName(targetPath)))
+            Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+
+        if (File.Exists(sourcePath))
+            File.Copy(sourcePath, targetPath, true);
+        else
+            Debug.LogError("Tool not found: " + sourcePath);
+
+
+
+        //copy Tools/crunch.exe to _Data/Tools/crunch.exe
+        //BuildTarget activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
+
+        //string outputDir = Path.GetDirectoryName(report.summary.outputPath);
+        //if (activeBuildTarget == BuildTarget.StandaloneOSX)
+        //{
+        //    outputDir = Path.Combine(outputDir, Path.GetFileNameWithoutExtension(report.summary.outputPath) + ".app");
+        //}
+
+        exeName = "crunch.exe";
+
+        sourcePath = Path.Combine(Application.dataPath, "Tools", exeName);
+        destinationToolsDir = Path.Combine(outputDir, Application.productName + "_Data", "Tools");
+        targetPath = Path.Combine(destinationToolsDir, exeName);
+
+        //if (activeBuildTarget == BuildTarget.StandaloneOSX)
+        //{
+        //    string destinationEncoderDir = Path.Combine(report.summary.outputPath, "Contents", "Tools");
+        //    targetPath = Path.Combine(destinationEncoderDir, exeName);
+        //}
 
         if (!Directory.Exists(Path.GetDirectoryName(targetPath)))
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath));

@@ -12,6 +12,8 @@ public class TextureCompress : MonoBehaviour
     private string toolPath;
     private string pngPath;
 
+    private string crunchToolPath;
+
     void Start()
     {
         string appData = Path.Combine(Application.dataPath, "Tools");
@@ -29,6 +31,11 @@ public class TextureCompress : MonoBehaviour
         if (!File.Exists(toolPath))
             throw new FileNotFoundException($"Cannot find astc encoder at {Path.GetFullPath(toolPath)}.");
 
+        //crunch.exe path
+        crunchToolPath = Path.Combine(appData, "crunch.exe");
+        if (!File.Exists(crunchToolPath))
+            throw new FileNotFoundException($"Cannot find dxt encoder at {Path.GetFullPath(crunchToolPath)}.");
+
         //图片
         pngPath = Path.Combine(Application.dataPath, "Images", "RGBA32.png");
         if (!File.Exists(pngPath))
@@ -42,6 +49,10 @@ public class TextureCompress : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             AstcCompressAsync(pngPath).Forget();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            DXTCompressAsync(pngPath).Forget();
         }
     }
 
@@ -82,6 +93,55 @@ public class TextureCompress : MonoBehaviour
             else
             {
                 Debug.LogError("Texture compression failed.");
+            }
+        }
+    }
+
+    async UniTaskVoid DXTCompressAsync(string pngPath)
+    {
+        await CrunchCompress(pngPath);
+    }
+
+    async UniTask CrunchCompress(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogError("File is not exists: " + path);
+            return;
+        }
+
+        string outputDirectory = Path.Combine(Application.dataPath, "Images");
+        string outputPath = Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(path) + ".dds");
+
+        ProcessStartInfo startInfo = new ProcessStartInfo
+        {
+            FileName = crunchToolPath,
+            Arguments = $"-file \"{path}\" -fileformat dds -dxt1",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true,
+            WorkingDirectory = outputDirectory
+        };
+
+        using (Process process = new Process { StartInfo = startInfo })
+        {
+            process.Start();
+
+            string output = await process.StandardOutput.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync();
+
+            await UniTask.WaitUntil(() => process.HasExited);
+
+            if (process.ExitCode == 0)
+            {
+                Debug.Log("Texture compressed successfully.");
+                Debug.Log("Output File: " + outputPath);
+            }
+            else
+            {
+                Debug.LogError("Texture compression failed.");
+                Debug.LogError("Error: " + error);
             }
         }
     }
